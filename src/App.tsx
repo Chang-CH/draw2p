@@ -1,5 +1,6 @@
 import { createRef, RefObject, useRef, useState } from "react";
 import "./App.css";
+import AboutDialog from "./components/AboutDialog";
 import Drawer from "./components/Drawer";
 import HelpDialog from "./components/HelpDialog";
 import WebRTC from "./components/WebRTC";
@@ -31,6 +32,7 @@ function App() {
   return (
     <div className="App">
       <div className="div-header">
+        <AboutDialog />
         <HelpDialog />
         <WebRTC onMessage={onReceiveAction} ref={rtcRef} />
       </div>

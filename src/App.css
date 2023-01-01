@@ -9,6 +9,8 @@
   border: 1px solid black;
   border-radius: 5px;
   margin-top: 2rem;
+  display: flex;
+  flex-direction: row;
 }
 
 .div-header {

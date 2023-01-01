@@ -42,7 +42,6 @@ const HelpDialog = () => {
             Once the answer is accepted both parties can start sending messages.
           </li>
         </ol>
-        <Divider />
         <h3>Accepting party</h3>
         <ol>
           <li>Click on the connect button.</li>
@@ -86,6 +85,14 @@ const HelpDialog = () => {
             <SettingOutlined />
           </span>
           . Currently only brush color and stroke width are supported.
+        </p>
+        <Divider />
+        <h2>Troubleshooting</h2>
+        <p>
+          In some cases, after STUN resolves a client's public IP, the router
+          may still block who can connect to devices on a network. In this case,
+          a TURN server is required to act as a relay, which is not supported in
+          this app.
         </p>
       </Modal>
     </>
