@@ -3,7 +3,7 @@ import {
   HighlightOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { Button, Popconfirm, Popover, Slider, Tooltip } from "antd";
+import { Button, Popover, Slider, Tooltip } from "antd";
 import {
   createRef,
   forwardRef,
@@ -22,7 +22,7 @@ import {
   DEFAULT_LINE_WIDTH,
   DEFAULT_WIDTH,
 } from "./constants";
-import "./drawer.css";
+import "./styles.css";
 //@ts-ignore
 import { SketchPicker } from "react-color";
 

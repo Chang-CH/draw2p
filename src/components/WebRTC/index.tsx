@@ -5,6 +5,7 @@ import { LinkOutlined } from "@ant-design/icons";
 import Modal from "antd/es/modal/Modal";
 import TextArea from "antd/es/input/TextArea";
 import { STATUS } from "./constants";
+import "./styles.css";
 
 /**
  * WebRTC logic: See https://webrtc.org/getting-started/peer-connections.
@@ -17,7 +18,8 @@ const WebRTC = forwardRef<
     useState<RTCPeerConnection | null>(null);
   const [dataChannel, setDataChannel] = useState<RTCDataChannel | null>(null);
 
-  const [isHidden, toggleHidden] = useState(false);
+  const [isHidden, toggleHidden] = useState(true);
+
   const [offerValue, setOfferValue] = useState("");
   const [isOffered, setOffered] = useState(false);
   const [answerValue, setAnswerValue] = useState("");
@@ -157,6 +159,7 @@ const WebRTC = forwardRef<
         open={!isHidden}
         onOk={() => toggleHidden(true)}
         onCancel={() => toggleHidden(true)}
+        footer={null}
       >
         <TextArea
           rows={4}
@@ -179,6 +182,7 @@ const WebRTC = forwardRef<
             });
           }}
           disabled={isOffered}
+          className="button-modal"
         >
           Generate Offer
         </Button>
@@ -191,6 +195,7 @@ const WebRTC = forwardRef<
             });
           }}
           disabled={isOffered}
+          className="button"
         >
           Accept Offer
         </Button>
@@ -210,6 +215,7 @@ const WebRTC = forwardRef<
                   setAnswered(true);
                 });
               }}
+              className="button"
             >
               Accept answer
             </Button>

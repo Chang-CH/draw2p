@@ -1,7 +1,8 @@
 import { createRef, RefObject, useRef, useState } from "react";
 import "./App.css";
-import Drawer from "./utils/Drawer";
-import WebRTC from "./utils/WebRTC";
+import Drawer from "./components/Drawer";
+import HelpDialog from "./components/HelpDialog";
+import WebRTC from "./components/WebRTC";
 
 export interface CanParsePeer {
   parsePeer(message: string): void;
@@ -30,6 +31,7 @@ function App() {
   return (
     <div className="App">
       <div className="div-header">
+        <HelpDialog />
         <WebRTC onMessage={onReceiveAction} ref={rtcRef} />
       </div>
       <div className="div-canvas">
