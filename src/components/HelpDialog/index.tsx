@@ -1,4 +1,9 @@
-import { InfoCircleOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  HighlightOutlined,
+  InfoCircleOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 import { Button, Divider, Modal } from "antd";
 import { useState } from "react";
 import "./styles.css";
@@ -20,8 +25,8 @@ const HelpDialog = () => {
         footer={null}
         onCancel={() => setHidden(true)}
       >
-        <h1>Connecting to peer</h1>
-        <h2>Initiating party</h2>
+        <h2>Connecting to peer</h2>
+        <h3>Initiating party</h3>
         <ol>
           <li>Click on the connect button.</li>
           <li>Click "Generate Offer".</li>
@@ -38,7 +43,7 @@ const HelpDialog = () => {
           </li>
         </ol>
         <Divider />
-        <h2>Accepting party</h2>
+        <h3>Accepting party</h3>
         <ol>
           <li>Click on the connect button.</li>
           <li>Wait for the initiating party's first offer.</li>
@@ -55,6 +60,33 @@ const HelpDialog = () => {
             sending messages.
           </li>
         </ol>
+        <Divider />
+        <h2>Drawing</h2>
+        <h3>Brushes</h3>
+        <p>Currently only 2 brushes are supported:</p>
+        <p>
+          Standard brush{" "}
+          <span>
+            <HighlightOutlined />
+          </span>
+          : click and drag to draw.
+        </p>
+        <p>
+          Eraser{" "}
+          <span>
+            <DeleteOutlined />
+          </span>
+          : Actually just a brush with white color and a thicker stroke. A
+          future update will use a more relatable icon.
+        </p>
+        <h3>Brush settings</h3>
+        <p>
+          Brush settings can be found by clicking on the settings button{" "}
+          <span>
+            <SettingOutlined />
+          </span>
+          . Currently only brush color and stroke width are supported.
+        </p>
       </Modal>
     </>
   );
