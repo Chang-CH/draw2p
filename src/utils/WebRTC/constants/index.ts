@@ -1,0 +1,8 @@
+export enum STATUS {
+  INIT,
+  OFFERED,
+  ANSWERED,
+  OPENED,
+  CLOSED,
+  FAILED,
+}
