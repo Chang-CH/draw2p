@@ -1,0 +1,25 @@
+.div-brushes {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  box-shadow: 0px 0px 5px black;
+  padding-inline: 5px;
+  padding-top: 5px;
+  border-radius: 5px;
+}
+
+.buttons {
+  margin-bottom: 5px;
+}
+
+.div-controls {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  right: 0;
+  box-shadow: 0px 0px 5px black;
+  padding-inline: 5px;
+  padding-top: 5px;
+  border-radius: 5px;
+}

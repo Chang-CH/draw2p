@@ -1,4 +1,10 @@
 import {
+  DeleteOutlined,
+  HighlightOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
+import { Button, Popconfirm, Popover, Slider, Tooltip } from "antd";
+import {
   createRef,
   forwardRef,
   MouseEventHandler,
@@ -9,7 +15,16 @@ import {
   useState,
 } from "react";
 import { CanParsePeer } from "../../App";
-import { DEFAULT_HEIGHT, DEFAULT_LINE_WIDTH, DEFAULT_WIDTH } from "./constants";
+import {
+  DEFAULT_ERASER_COLOR,
+  DEFAULT_ERASER_WIDTH,
+  DEFAULT_HEIGHT,
+  DEFAULT_LINE_WIDTH,
+  DEFAULT_WIDTH,
+} from "./constants";
+import "./drawer.css";
+//@ts-ignore
+import { SketchPicker } from "react-color";
 
 const Drawer = forwardRef<
   CanParsePeer,
@@ -25,6 +40,10 @@ const Drawer = forwardRef<
 
   const stroke = useRef<Array<number>>([]);
   const isPainting = useRef(false);
+  const oldBrush = useRef({
+    color: "#000",
+    lineWidth: DEFAULT_LINE_WIDTH,
+  });
 
   useEffect(() => {
     if (!canvasRef?.current) return;
@@ -37,11 +56,16 @@ const Drawer = forwardRef<
    * @param givenColor string color of the stroke.
    * @param values array of values representing coordinates of each point.
    */
-  function drawFromArray(givenColor: string, values: Array<number>) {
+  function drawFromArray(
+    givenColor: string,
+    stroke: number,
+    values: Array<number>
+  ) {
     if (!ctx || values.length < 2) return;
 
     ctx.beginPath();
     ctx.strokeStyle = givenColor;
+    ctx.lineWidth = stroke;
 
     ctx.moveTo(values[0], values[1]);
 
@@ -61,7 +85,11 @@ const Drawer = forwardRef<
     const values = message.split(",");
     const type = values[0];
     if (type === "draw") {
-      drawFromArray(values[1], values.slice(2, values.length).map(parseFloat));
+      drawFromArray(
+        values[1],
+        parseFloat(values[2]),
+        values.slice(3, values.length).map(parseFloat)
+      );
     }
   }
 
@@ -90,7 +118,8 @@ const Drawer = forwardRef<
     ctx.stroke();
     ctx.beginPath();
 
-    if (onAction) onAction(`draw,${color},${stroke.current.join(",")}`);
+    if (onAction)
+      onAction(`draw,${color},${lineWidth},${stroke.current.join(",")}`);
   };
 
   /**
@@ -107,7 +136,7 @@ const Drawer = forwardRef<
     ctx.lineWidth = lineWidth;
     ctx.lineCap = "round";
 
-    // TODO: We need to get rect each time since user might scroll during drawing.
+    // We need to get rect each time since user might scroll during drawing.
     let rect = canvasRef.current.getBoundingClientRect();
 
     // Save to stroke to send to peer
@@ -129,16 +158,78 @@ const Drawer = forwardRef<
   });
 
   return (
-    <canvas
-      id="canvas"
-      width={width}
-      height={height}
-      ref={canvasRef}
-      onMouseDown={startPainting}
-      onMouseMove={onPaint}
-      onMouseUp={stopPainting}
-      onMouseLeave={stopPainting}
-    />
+    <>
+      <div className="div-brushes">
+        <Tooltip title="brush">
+          <Button
+            shape="circle"
+            icon={<HighlightOutlined />}
+            className="buttons"
+            size="large"
+            onClick={() => {
+              setColor(oldBrush.current.color);
+              setLineWidth(oldBrush.current.lineWidth);
+            }}
+          />
+        </Tooltip>
+        <Tooltip title="eraser">
+          <Button
+            shape="circle"
+            icon={<DeleteOutlined />}
+            className="buttons"
+            size="large"
+            onClick={() => {
+              oldBrush.current.color = color;
+              oldBrush.current.lineWidth = lineWidth;
+              setColor(DEFAULT_ERASER_COLOR);
+              setLineWidth(DEFAULT_ERASER_WIDTH);
+            }}
+          />
+        </Tooltip>
+      </div>
+      <canvas
+        id="canvas"
+        width={width}
+        height={height}
+        ref={canvasRef}
+        onMouseDown={startPainting}
+        onMouseMove={onPaint}
+        onMouseUp={stopPainting}
+        onMouseLeave={stopPainting}
+      />
+      <div className="div-controls">
+        <Popover
+          title="Brush settings"
+          placement="left"
+          content={
+            <div>
+              <p>Brush color</p>
+              <SketchPicker
+                onChange={(newColor: { hex: string }) => {
+                  setColor(newColor.hex);
+                }}
+                color={color}
+              />
+              <p>Brush size</p>
+              <Slider
+                value={lineWidth}
+                min={1}
+                max={50}
+                onChange={(value: number) => setLineWidth(value)}
+              />
+            </div>
+          }
+          trigger="click"
+        >
+          <Button
+            shape="circle"
+            className="buttons"
+            size="large"
+            icon={<SettingOutlined />}
+          />
+        </Popover>
+      </div>
+    </>
   );
 });
 

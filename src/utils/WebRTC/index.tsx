@@ -23,6 +23,7 @@ const WebRTC = forwardRef<
   const [answerValue, setAnswerValue] = useState("");
   const [isAnswered, setAnswered] = useState(false);
 
+  // TODO: use status value to decide disabled etc., show status in UI
   const [status, setStatus] = useState(STATUS.INIT);
 
   useEffect(() => {
