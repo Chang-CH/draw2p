@@ -8,6 +8,7 @@ import {
   ImportOutlined,
   LinkOutlined,
   LoadingOutlined,
+  PoweroffOutlined,
 } from "@ant-design/icons";
 import Modal from "antd/es/modal/Modal";
 import TextArea from "antd/es/input/TextArea";
@@ -26,16 +27,12 @@ const WebRTC = forwardRef<
   const [dataChannel, setDataChannel] = useState<RTCDataChannel | null>(null);
 
   const [isHidden, toggleHidden] = useState(true);
-
   const [offerValue, setOfferValue] = useState("");
-  const [isOffered, setOffered] = useState(false);
   const [answerValue, setAnswerValue] = useState("");
-  const [isAnswered, setAnswered] = useState(false);
 
-  // TODO: use status value to decide disabled etc., show status in UI
   const [status, setStatus] = useState(STATUS.INIT);
 
-  useEffect(() => {
+  const initPeerConnection = () => {
     let connection = new RTCPeerConnection({
       iceServers: [
         {
@@ -66,6 +63,10 @@ const WebRTC = forwardRef<
     };
 
     setPeerConnection(connection);
+  };
+
+  useEffect(() => {
+    initPeerConnection();
   }, []);
 
   function generateOffer(callback: (message: string) => void) {
@@ -217,7 +218,7 @@ const WebRTC = forwardRef<
           placeholder="Paste offer here"
           value={offerValue}
           onChange={(event) => setOfferValue(event?.target?.value ?? "")}
-          disabled={isOffered}
+          disabled={status >= STATUS.OFFERED}
         />
         <Button
           onClick={() => {
@@ -229,7 +230,6 @@ const WebRTC = forwardRef<
 
             generateOffer((value) => {
               setOfferValue(value);
-              setOffered(true);
               navigator.clipboard.writeText(value);
               notification.info({
                 message: "Offer generated",
@@ -238,7 +238,7 @@ const WebRTC = forwardRef<
               });
             });
           }}
-          disabled={isOffered}
+          disabled={status >= STATUS.OFFERED}
           className="button-modal"
         >
           Generate Offer
@@ -247,8 +247,6 @@ const WebRTC = forwardRef<
           onClick={() => {
             acceptOffer(offerValue, (answer) => {
               setAnswerValue(answer);
-              setOffered(true);
-              setAnswered(true);
               navigator.clipboard.writeText(answer);
               notification.info({
                 message: "Answer generated",
@@ -257,26 +255,24 @@ const WebRTC = forwardRef<
               });
             });
           }}
-          disabled={isOffered}
+          disabled={status >= STATUS.OFFERED}
           className="button-modal"
         >
           Accept Offer
         </Button>
-        {isOffered ? (
+        {status >= STATUS.OFFERED ? (
           <>
             <TextArea
               rows={4}
-              placeholder="Paste offer here"
+              placeholder="Paste answer here"
               value={answerValue}
               onChange={(event) => setAnswerValue(event?.target?.value ?? "")}
-              disabled={isAnswered}
+              disabled={status >= STATUS.ANSWERED}
             />
             <Button
-              disabled={isAnswered}
+              disabled={status >= STATUS.ANSWERED}
               onClick={() => {
-                acceptAnswer(answerValue, () => {
-                  setAnswered(true);
-                });
+                acceptAnswer(answerValue, () => {});
               }}
               className="button-modal"
             >
@@ -323,6 +319,19 @@ const WebRTC = forwardRef<
             },
           ]}
         />
+        <Button
+          danger
+          type="primary"
+          icon={<PoweroffOutlined />}
+          onClick={() => {
+            setStatus(STATUS.INIT);
+            initPeerConnection();
+            setOfferValue("");
+            setAnswerValue("");
+          }}
+        >
+          reset
+        </Button>
       </Modal>
     </>
   );
