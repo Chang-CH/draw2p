@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { Buffer } from "buffer";
 import { CanSendMessage } from "../../App";
-import { Button, Steps } from "antd";
+import { Button, notification, Steps } from "antd";
 import {
   ApiOutlined,
   ExportOutlined,
@@ -48,9 +48,18 @@ const WebRTC = forwardRef<
       e.channel.onopen = (e) => {
         setStatus(STATUS.OPENED);
         toggleHidden(true);
+        notification.success({
+          message: "Connection successful",
+          description:
+            "Datachannel has been opened. Drawing on the canvas will now cause the stroke to be sent to the connecting peer.",
+        });
       };
       e.channel.onclose = (e) => {
         setStatus(STATUS.CLOSED);
+        notification.error({
+          message: "Connection closed",
+          description: "Datachannel has been closed.",
+        });
       };
       e.channel.onmessage = (e) => onMessage(e.data);
       setDataChannel(e.channel);
@@ -66,6 +75,11 @@ const WebRTC = forwardRef<
     dc.onopen = (e) => {
       setStatus(STATUS.OPENED);
       toggleHidden(true);
+      notification.success({
+        message: "Connection successful",
+        description:
+          "Datachannel has been opened. Drawing on the canvas will now cause the stroke to be sent to the connecting peer.",
+      });
     };
     dc.onclose = (e) => {
       setStatus(STATUS.CLOSED);
@@ -216,6 +230,12 @@ const WebRTC = forwardRef<
             generateOffer((value) => {
               setOfferValue(value);
               setOffered(true);
+              navigator.clipboard.writeText(value);
+              notification.info({
+                message: "Offer generated",
+                description:
+                  "Offer has been generated and saved to clipboard. Send the answer to your connecting peer.",
+              });
             });
           }}
           disabled={isOffered}
@@ -229,6 +249,12 @@ const WebRTC = forwardRef<
               setAnswerValue(answer);
               setOffered(true);
               setAnswered(true);
+              navigator.clipboard.writeText(answer);
+              notification.info({
+                message: "Answer generated",
+                description:
+                  "Offer has been accepted. Answer has been generated and saved to clipboard. Send the answer to your connecting peer.",
+              });
             });
           }}
           disabled={isOffered}
