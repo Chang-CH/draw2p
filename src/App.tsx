@@ -1,5 +1,7 @@
-import { createRef, RefObject, useRef, useState } from "react";
+import { Button } from "antd";
+import { useRef } from "react";
 import "./App.css";
+import logo from "./assets/logo.svg";
 import AboutDialog from "./components/AboutDialog";
 import Drawer from "./components/Drawer";
 import HelpDialog from "./components/HelpDialog";
@@ -32,6 +34,18 @@ function App() {
   return (
     <div className="App">
       <div className="div-header">
+        <Button
+          type="ghost"
+          href="https://chang-ch.github.io"
+          icon={<img src={logo} style={{ width: "100%", height: "100%" }} />}
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            marginRight: "auto",
+          }}
+        >
+          Draw2P
+        </Button>
         <AboutDialog />
         <HelpDialog />
         <WebRTC onMessage={onReceiveAction} ref={rtcRef} />
