@@ -1,4 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import { Buffer } from "buffer";
 import { CanSendMessage } from "../../App";
 import { Button } from "antd";
 import { LinkOutlined } from "@ant-design/icons";
@@ -77,7 +78,9 @@ const WebRTC = forwardRef<
 
     peerConnection.onicecandidate = (e) => {
       if (e.candidate || !peerConnection?.localDescription) return;
-      callback(peerConnection.localDescription.sdp);
+      callback(
+        Buffer.from(peerConnection.localDescription.sdp).toString("base64")
+      );
       setStatus(STATUS.OFFERED);
     };
   }
@@ -87,7 +90,10 @@ const WebRTC = forwardRef<
 
     peerConnection
       .setRemoteDescription(
-        new RTCSessionDescription({ type: "offer", sdp: offer })
+        new RTCSessionDescription({
+          type: "offer",
+          sdp: Buffer.from(offer, "base64").toString("utf8"),
+        })
       )
       .then(() => {
         setStatus(STATUS.OFFERED);
@@ -103,7 +109,9 @@ const WebRTC = forwardRef<
 
     peerConnection.onicecandidate = (e) => {
       if (e.candidate || !peerConnection?.localDescription) return;
-      callback(peerConnection.localDescription.sdp);
+      callback(
+        Buffer.from(peerConnection.localDescription.sdp).toString("base64")
+      );
     };
   }
 
@@ -112,7 +120,10 @@ const WebRTC = forwardRef<
 
     peerConnection
       .setRemoteDescription(
-        new RTCSessionDescription({ type: "answer", sdp: answer })
+        new RTCSessionDescription({
+          type: "answer",
+          sdp: Buffer.from(answer, "base64").toString("utf8"),
+        })
       )
       .then(() => {
         callback();
@@ -195,7 +206,7 @@ const WebRTC = forwardRef<
             });
           }}
           disabled={isOffered}
-          className="button"
+          className="button-modal"
         >
           Accept Offer
         </Button>
@@ -215,7 +226,7 @@ const WebRTC = forwardRef<
                   setAnswered(true);
                 });
               }}
-              className="button"
+              className="button-modal"
             >
               Accept answer
             </Button>
