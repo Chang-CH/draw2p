@@ -152,8 +152,20 @@ const WebRTC = forwardRef<
         type="primary"
         icon={<LinkOutlined />}
         onClick={() => toggleHidden((isHidden: boolean) => !isHidden)}
+        style={{
+          backgroundColor:
+            status === STATUS.CLOSED
+              ? "#ff4d4f"
+              : status === STATUS.OPENED
+              ? "#52c41a"
+              : "#1677ff",
+        }}
       >
-        Connect
+        {status === STATUS.CLOSED
+          ? "disconnected"
+          : status === STATUS.OPENED
+          ? "connected"
+          : "connect"}
       </Button>
     );
   }
@@ -164,8 +176,20 @@ const WebRTC = forwardRef<
         type="primary"
         icon={<LinkOutlined />}
         onClick={() => toggleHidden((isHidden: boolean) => !isHidden)}
+        style={{
+          backgroundColor:
+            status === STATUS.CLOSED
+              ? "#ff4d4f"
+              : status === STATUS.OPENED
+              ? "#52c41a"
+              : "#1677ff",
+        }}
       >
-        Connect
+        {status === STATUS.CLOSED
+          ? "disconnected"
+          : status === STATUS.OPENED
+          ? "connected"
+          : "connect"}
       </Button>
       <Modal
         title="Connect to peer"
