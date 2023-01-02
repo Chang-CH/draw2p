@@ -1,8 +1,14 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { Buffer } from "buffer";
 import { CanSendMessage } from "../../App";
-import { Button } from "antd";
-import { LinkOutlined } from "@ant-design/icons";
+import { Button, Steps } from "antd";
+import {
+  ApiOutlined,
+  ExportOutlined,
+  ImportOutlined,
+  LinkOutlined,
+  LoadingOutlined,
+} from "@ant-design/icons";
 import Modal from "antd/es/modal/Modal";
 import TextArea from "antd/es/input/TextArea";
 import { STATUS } from "./constants";
@@ -39,13 +45,11 @@ const WebRTC = forwardRef<
     });
 
     connection.ondatachannel = (e) => {
-      // TODO: move to component logger?
       e.channel.onopen = (e) => {
-        console.log("channel open");
         setStatus(STATUS.OPENED);
+        toggleHidden(true);
       };
       e.channel.onclose = (e) => {
-        console.log("channel close");
         setStatus(STATUS.CLOSED);
       };
       e.channel.onmessage = (e) => onMessage(e.data);
@@ -59,13 +63,11 @@ const WebRTC = forwardRef<
     if (!peerConnection) return;
 
     const dc = peerConnection.createDataChannel("draw");
-    // TODO: move to component logger?
     dc.onopen = (e) => {
-      console.log("channel open");
       setStatus(STATUS.OPENED);
+      toggleHidden(true);
     };
     dc.onclose = (e) => {
-      console.log("channel close");
       setStatus(STATUS.CLOSED);
     };
     dc.onmessage = (e) => onMessage(e.data);
@@ -232,6 +234,45 @@ const WebRTC = forwardRef<
             </Button>
           </>
         ) : null}
+        <Steps
+          items={[
+            {
+              title: "offer",
+              status: status >= STATUS.OFFERED ? "finish" : "wait",
+              icon:
+                status === STATUS.INIT ? (
+                  <LoadingOutlined />
+                ) : (
+                  <ExportOutlined />
+                ),
+            },
+            {
+              title: "answer",
+              status: status >= STATUS.ANSWERED ? "finish" : "wait",
+              icon:
+                status === STATUS.OFFERED ? (
+                  <LoadingOutlined />
+                ) : (
+                  <ImportOutlined />
+                ),
+            },
+            {
+              title: "connect",
+              status:
+                status === STATUS.OPENED
+                  ? "finish"
+                  : status === STATUS.CLOSED
+                  ? "error"
+                  : "wait",
+              icon:
+                status === STATUS.ANSWERED ? (
+                  <LoadingOutlined />
+                ) : (
+                  <ApiOutlined />
+                ),
+            },
+          ]}
+        />
       </Modal>
     </>
   );
