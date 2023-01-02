@@ -104,4 +104,10 @@ anymore). There are public TURN servers as well, and WebRTC is
 encrypted end to end so the TURN relays would not be able to read the
 data.
 
+## Deploying to pages
+
+1. Build with `pnpm build`, then add the build output with `git add dist`.
+2. Commit the build output with `git commit dist`.
+3. Use the command `git subtree push --prefix dist origin gh-pages` to push the build output to the `gh-pages` branch.
+4. In github's settings, enable pages and set the source branch to `gh-pages`, `/root`.
 
